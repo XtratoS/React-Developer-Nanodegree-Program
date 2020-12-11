@@ -7,18 +7,25 @@ class Book extends Component {
         book: {}
     }
 
-    updateSelf = () => {
-        const id = this.props.book;
-        BooksAPI.get(id).then((book) => {
-            this.setState({book: book});
-        });
-    }
-
     componentDidMount() {
+        this._ismounted = true;
         this.updateSelf();
     }
 
-    moveBookShelf = (event, book) => {
+    componentWillUnmount() {
+        this._ismounted = false;
+    }
+
+    updateSelf = () => {
+        const id = this.props.book;
+        BooksAPI.get(id).then((book) => {
+            if (this._ismounted) {
+                this.setState({book: book});
+            }
+        });
+    }
+
+    changeBookShelf = (event, book) => {
         const newShelf = event.target.value;
         BooksAPI.update(book, newShelf).then((newList) => {
             if (this.props.updateList) {
@@ -34,9 +41,9 @@ class Book extends Component {
         return (
             <div className="book">
                 <div className="book-top">
-                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book && book.imageLinks && book.imageLinks.thumbnail}")`, backgroundRepeat: 'no-repeat' }}></div>
+                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${(book && book.imageLinks && book.imageLinks.thumbnail)}")`, backgroundRepeat: 'no-repeat' }}></div>
                     <div className="book-shelf-changer">
-                        <select onChange={(event) => {this.moveBookShelf(event, book)}} defaultValue="move">
+                        <select onChange={(event) => {this.changeBookShelf(event, book)}} defaultValue="move">
                             <option value="move" disabled>Move to...</option>
                             <option value="currentlyReading">{book.shelf==='currentlyReading' && '✔ '}Currently Reading</option>
                             <option value="wantToRead">{book.shelf==='wantToRead' && '✔ '}Want to Read</option>

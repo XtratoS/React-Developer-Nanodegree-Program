@@ -5,8 +5,7 @@ import {Link} from 'react-router-dom';
 class SearchBar extends Component {
 
     handleChange = (event) => {
-        const query = event.target.value;
-        this.props.changeQuery(query);
+        this.props.changeQuery(event.target.value);
     }
 
     render() {
