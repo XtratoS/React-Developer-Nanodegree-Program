@@ -13,24 +13,29 @@ class Search extends Component {
 
     handleChange = (event) => {
         const query = event.target.value;
-        this.setState({query: query});
-        if (!((!query) || query === '')) {
-            BooksAPI.search(query).then((result) => {
-                const books = result.books;
-                const resultQuery = result.query;
-                if (Array.isArray(books)) {
-                    if (resultQuery === this.state.query){
-                        this.setState({books: books.map((book) => (book.id))});
-                    }
+
+        this.setState(
+            function updater (prevState) {
+                prevState.query = query;
+                return prevState;
+            }, function callback () {
+                if (!((!query) || query === '')) {
+                    BooksAPI.search(query).then((result) => {
+                        const books = result.books;
+                        const resultQuery = result.query;
+                        if (resultQuery === this.state.query){
+                            if (Array.isArray(books)) {
+                                this.setState({books: books.map((book) => (book.id))});
+                            } else {
+                                this.setState({books: []});
+                            }
+                        }
+                    });
                 } else {
-                    if (resultQuery === this.state.query){
-                        this.setState({books: []});
-                    }
+                    this.setState({books: []});
                 }
-            });
-        } else {
-            this.setState({books: []});
-        }
+            }
+        );
     }
 
     render() {
