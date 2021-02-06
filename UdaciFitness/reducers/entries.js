@@ -13,11 +13,10 @@ export default function entries(state = {}, action) {
                 ...action.entry
             };
         case REMOVE_ENTRY:
-            const newState = {}
-            Object.keys(state)
-                .filter((e) => {e !== action.key})
-                .map((e) => {newState[e] = state[e]})
-            return newState;
+            return {
+                ...state,
+                [action.key]: null
+            };
         default:
             return state;
     }

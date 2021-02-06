@@ -10,6 +10,7 @@ import { removeEntry as _removeEntry, submitEntry } from '../utils/api';
 import { connect } from 'react-redux';
 import { addEntry, removeEntry } from '../actions';
 import { purple, white } from '../utils/colors';
+import { NavigationAction } from '@react-navigation/native';
 
 function SubmitBtn({ onPress }) {
     return (
@@ -61,11 +62,15 @@ class AddEntry extends Component {
         this.setState({[metric]: value});
     }
 
+    toHome = () => {
+        this.props.navigation.navigate('History')
+    }
+
     submit = () => {
         const key = timeToString();
         const entry = this.state;
 
-        // RESET STATE
+        // RESET COMPONENT INTERNAL STATE
         this.setState((prevState)=>(
             Object.keys(prevState).reduce((newState, currKey) => {
                 newState[currKey] = 0;
@@ -76,12 +81,13 @@ class AddEntry extends Component {
         // UPDATE REDUX
         this.props.dispatch(addEntry({
             [key]: entry
-        }))
-
-        // NAVIGATE TO HOME
+        }));
 
         // UPDATE ASYNCSTORAGE
         submitEntry({key, entry});
+
+        // NAVIGATE TO HOME
+        this.toHome();
 
         // CLEAR LOCAL NOTIFICATION
     }
@@ -92,10 +98,11 @@ class AddEntry extends Component {
         // UPDATE REDUX
         this.props.dispatch(removeEntry(key));
 
-        // ROUTE TO HOME
-
         // UPDATE ASYNCSTORAGE
         _removeEntry(key);
+
+        // ROUTE TO HOME
+        this.toHome();
     }
 
     render() {
@@ -114,7 +121,7 @@ class AddEntry extends Component {
                     </TextButton>
                 </View>
             )
-        }StyleSheet
+        }
 
         return (
             <View style={styles.container}>

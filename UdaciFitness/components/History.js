@@ -8,6 +8,8 @@ import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import DateHeader from './DateHeader';
 import { white } from '../utils/colors';
 import MetricCard from './MetricCard';
+import { createStackNavigator } from '@react-navigation/stack';
+import EntryDetail from './EntryDetail';
 
 class History extends Component {
     componentDidMount() {
@@ -16,7 +18,7 @@ class History extends Component {
         fetchCalendarResults().then((res) => {
             return dispatch(receiveEntries(res));
         }).then(({ entries }) => {
-            
+            // console.log('---ENTRIES---', entries, '------')
         })
     }
 
@@ -24,10 +26,17 @@ class History extends Component {
         if (item) {
             return (
                 <View style={styles.item}>
-                    <MetricCard
-                        date={date}
-                        metrics={item}
-                    />
+                    <TouchableOpacity
+                        onPress={() => {this.props.navigation.navigate(
+                            'Details',
+                            { entryId: date }
+                        )}}
+                    >
+                        <MetricCard
+                            date={date}
+                            metrics={item}
+                        />
+                    </TouchableOpacity>
                 </View>
             )
         } else {
@@ -46,13 +55,14 @@ class History extends Component {
 
     render() {
         const { entries } = this.props;
+        // console.log('---ENTRIES---', entries, '------');
         return (
             <View style={{flex: 1, width: '100%'}}>
                 <Agenda
                     items={entries}
                     renderDay={this.renderItem}
-                    onDayPress={(day)=>{console.log('day pressed', day)}}
-                    onDayChange={(day)=>{console.log('day changed')}}
+                    // onDayPress={(day)=>{console.log('day pressed', day)}}
+                    // onDayChange={(day)=>{console.log('day changed')}}
                     rowHasChanged={(r1, r2) => {
                         for (let key of Object.keys({...r1, ...r2})) {
                             if (r1[key] !== r2[key]) {
@@ -99,13 +109,38 @@ const styles = StyleSheet.create({
     }
 })
 
-function mapStateToProps(entries) {
-    for (let key in entries) {
-        entries[key] = entries[key] ? [entries[key]] : []
+function mapStateToProps(state) {
+    let entries = {}
+    for (let key in state) {
+        entries[key] = state[key] ? [state[key]] : []
     }
     return {
         entries
     }
 }
 
-export default connect(mapStateToProps)(History);
+const ConnectedHistory = connect(mapStateToProps)(History);
+
+const Stack = createStackNavigator();
+
+// const screenOptions = ({ route }) => {
+//     const { entryId } = route.params;
+//     const date = entryId.dateString;
+
+//     const year = date.slice(0, 4);
+//     const month = date.slice(5, 7);
+//     const day = date.slice(8);
+
+//     return {
+//         title: `${day}/${month}/${year}`
+//     }
+// }
+
+const HistoryStackScreen = () => (
+    <Stack.Navigator>
+        <Stack.Screen name="Home" component={ConnectedHistory} />
+        <Stack.Screen name="Details" component={EntryDetail} />
+    </Stack.Navigator>
+)
+
+export default HistoryStackScreen;
