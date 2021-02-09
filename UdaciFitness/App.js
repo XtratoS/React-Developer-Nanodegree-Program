@@ -13,6 +13,7 @@ import { gray, lightPurp, pink, purple, white } from './utils/colors';
 import Constants from 'expo-constants';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Live from './components/Live';
 
 const store = createStore(reducer);
 
@@ -36,10 +37,14 @@ const _tabBarOptions = {
 
 const addTabOptions = () => ({
   tabBarIcon: ({color, size}) => (<FontAwesome name="plus" color={color} size={size} />)
-})
+});
 
 const homeTabOptions = () => ({
   tabBarIcon: ({color, size}) => (<FontAwesome name="history" color={color} size={size} />)
+});
+
+const liveTabOptions = () => ({
+  tabBarIcon: ({color, size}) => (<MaterialIcons name="speed" color={color} size={size} />)
 })
 
 export default class App extends Component {
@@ -51,6 +56,7 @@ export default class App extends Component {
           <Tab.Navigator backBehavior="none" tabBarOptions={_tabBarOptions}>
             <Tab.Screen name="History" component={History} options={homeTabOptions()} />
             <Tab.Screen name="Add" component={AddEntry} options={addTabOptions()} />
+            <Tab.Screen name="Live" component={Live} options={liveTabOptions()} />
             {/* <History /> */}
             {/* <AddEntry /> */}
           </Tab.Navigator>

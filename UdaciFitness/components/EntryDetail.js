@@ -48,7 +48,6 @@ class EntryDetail extends Component {
                 <TextButton style={{margin: 20}} onPress={this.reset}>
                     RESET
                 </TextButton>
-                <Text>Entry Detail {key}</Text>
             </View>
         )
     }

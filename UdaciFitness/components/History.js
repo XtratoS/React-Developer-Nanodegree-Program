@@ -61,8 +61,11 @@ class History extends Component {
                 <Agenda
                     items={entries}
                     renderDay={this.renderItem}
-                    // onDayPress={(day)=>{console.log('day pressed', day)}}
-                    // onDayChange={(day)=>{console.log('day changed')}}
+                    current={'2021-02-08'}
+                    minDate={'2021-02-01'}
+                    maxDate={'2021-02-20'}
+                    onDayPress={(day)=>{console.log('day pressed', day)}}
+                    onDayChange={(day)=>{console.log('day changed')}}
                     rowHasChanged={(r1, r2) => {
                         for (let key of Object.keys({...r1, ...r2})) {
                             if (r1[key] !== r2[key]) {
