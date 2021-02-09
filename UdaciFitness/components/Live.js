@@ -11,7 +11,7 @@ export default class Live extends Component {
         status: null,
         coords: null,
         direction: '',
-        bounceValue: 1,
+        bounceValue: new Animated.Value(1),
     }
     componentDidMount() {
         this._isMounted = true;
@@ -48,14 +48,13 @@ export default class Live extends Component {
             distanceInterval: 1,
         }, ({ coords }) => {
             const newDirection = calculateDirection(coords.heading);
-            const { direction, bounceValue } = this.state;
+            const { direction } = this.state;
 
-            console.log(direction, newDirection);
             if (newDirection !== direction) {
                 Animated.sequence([
-                    Animated.timing(bounceValue, {toValue: 1.94, duration: 2000}),
-                    Animated.spring(bounceValue, {toValue: 1, friction: 4})
-                ])
+                    Animated.timing(this.state.bounceValue, {toValue: 1.04, duration: 200, useNativeDriver: true}),
+                    Animated.spring(this.state.bounceValue, {toValue: 1, friction: 3, useNativeDriver: true})
+                ]).start();
             }
 
             if (this._isMounted === true) {
